@@ -1,0 +1,52 @@
+body {
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+table {
+    height: 800px;
+    width: 800px;
+    margin: auto;
+    background-color: rgb(69, 87, 103);
+
+    border-collapse:collapse;
+}
+
+td {
+    width: 60px;
+    height: 60px;
+
+    border: 1px solid gray;
+}
+
+.EARTH {
+    background-color: rgb(78, 45, 26);
+}
+
+.modal {
+    background-color: rgba(139, 42, 42, 0.813);
+    width: 400px;
+    height: 200px;
+    padding-top: 30px;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.hidden {
+    display: none;
+}
+
+.modal button {
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 17px;
+
+}
+
+.modal button:hover {
+    cursor: pointer;
+    background-color: rgb(215, 215, 214);
+
+}
