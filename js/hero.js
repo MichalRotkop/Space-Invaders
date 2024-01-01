@@ -41,15 +41,26 @@ function onKeyDown(ev) {
         case 'Space':
             shoot()
             break;
-        case 'ShiftRight':
-            console.log('pressed ShiftRight:')
-            shiftBoardRight(gBoard, 0, 2)
-            renderBoard(gBoard)
-            break;
+
+            // for self testing: 
+
+            // case 'ShiftRight':
+            //     console.log('pressed ShiftRight:')
+            //     shiftBoardRight(gBoard, 0, 2)
+            //     renderBoard(gBoard)
+            //     break;
+            // case 'Enter':
+            //     console.log('pressed Enter:')
+        //     shiftBoardLeft(gBoard, 0, 2)
+        //     renderBoard(gBoard)
+        //     break;
+        // case 'ShiftLeft':
+        //     console.log('pressed shitLeft:')
+        //     shiftBoardDown(gBoard, 0, 2)
+        //     renderBoard(gBoard)
+        //     break;
         case 'Enter':
-            console.log('pressed Enter:')
-            shiftBoardLeft(gBoard, 0, 2)
-            renderBoard(gBoard)
+            moveAliens()
             break;
     }
 }

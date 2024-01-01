@@ -35,6 +35,9 @@ function startGame() {
     createHero(gBoard)
     gHero.score = 0
     createAliens(gBoard)
+    gAliensTopRowIdx = 0
+    gAliensBottomRowIdx = ALIEN_ROW_COUNT - 1
+    gIsAlienFreeze = false
     console.table(gBoard)
     renderBoard(gBoard)
     renderScore()
