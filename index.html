@@ -15,8 +15,16 @@
     </table>
 
     <div class="modal">
-        <h2>You Won!</h2>
-        <button onclick="startGame()">Restart</button>
+        <h2></h2>
+        <div class="levels">
+            <h3>Choose Level:</h3>
+            <button onclick="setLevel(this)">Easy</button>
+            <button onclick="setLevel(this)">Normal</button>
+            <button onclick="setLevel(this)">Hard</button>
+
+        </div>
+
+        <button class="restart" onclick="startGame()">Start</button>
     </div>
     
     <script src="js/util.js"></script>

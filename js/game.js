@@ -1,48 +1,58 @@
 'use strict'
 
 const BOARD_SIZE = 14
-const ALIEN_ROW_LENGTH = 8
-const ALIEN_ROW_COUNT = 3
+var ALIEN_ROW_LENGTH = 8
+var ALIEN_ROW_COUNT = 3
 const HERO = '🛸'
-const ALIEN = '👽'
-const LASER = '❗'
+const ALIEN1 = '👾'
+const ALIEN2 = '👻'
+const ALIEN3 = '👽'
+
+
+var LASER = '🔷'
+var ROCK = '🔶'
+const CANDY = '🍬'
 
 const SKY = 'SKY'
 const EARTH = 'EARTH'
+
+var gIntervalCandy
+var gCandyTimeout
 
 // Matrix of cell objects. e.g.: {type: SKY, gameObject: ALIEN}
 
 var gBoard
 var gGame = {
     isOn: false,
-    alienCount: 0
+    alienCount: 0,
+    fasterLaserCount: 3,
 }
 
 // Called when game loads
 
 function init() {
-    // later on no start game, only menu
-    startGame()
-    
-}
-
-function startGame() {
-
-    // see if toggle or hide/show fits better
-    hideGameOverModal()
-    gGame.isOn = true
+    gGame.alienCount = 0
+    gGame.fasterLaserCount = 3
     gBoard = createBoard(BOARD_SIZE)
     createHero(gBoard)
     gHero.score = 0
-    createAliens(gBoard)
     gAliensTopRowIdx = 0
     gAliensBottomRowIdx = ALIEN_ROW_COUNT - 1
     gIsAlienFreeze = false
-    console.table(gBoard)
+    // console.table(gBoard)
+    createAliens(gBoard)
     renderBoard(gBoard)
     renderScore()
-    // start alien interval
+}
 
+function startGame() {
+    init()
+    // see if toggle or hide/show fits better
+    hideGameOverModal()
+    gGame.isOn = true
+    moveAliens(shiftBoardRight)
+    gIntervalAliensShoot = setInterval(throwRock, getRandomInt(600, 3000))
+    gIntervalCandy = setInterval(addCandy, 10000)
 }
 
 // Create and returns the board with aliens on top, ground at bottom
@@ -57,6 +67,23 @@ function createBoard(size) {
         }
     }
     return board
+}
+
+function setLevel(elBtn) {
+    if (elBtn.innerText === 'Easy') {
+        ALIEN_ROW_LENGTH = 8
+        ALIEN_ROW_COUNT = 3
+        ALIEN_SPEED = 500
+    } else if (elBtn.innerText === 'Normal') {
+        ALIEN_ROW_LENGTH = 8
+        ALIEN_ROW_COUNT = 4
+        ALIEN_SPEED = 450
+    } else {
+        ALIEN_ROW_LENGTH = 10
+        ALIEN_ROW_COUNT = 5
+        ALIEN_SPEED = 400
+    }
+    init()
 }
 
 // Render the board as a <table> to the page
@@ -78,9 +105,26 @@ function renderBoard(board) {
     elTbody.innerHTML = strHTML
 }
 
+function addCandy() {
+    var jRandomIdx = getRandomInt(0, gBoard[0].length)
+    while (gHero.pos.j === jRandomIdx) {
+        jRandomIdx = getRandomInt(0, gBoard[0].length)
+    }
+    var candyPos = { i: gBoard.length - 2, j: jRandomIdx }
+    updateCell(candyPos, CANDY)
+    gCandyTimeout = setTimeout(() => {
+        if (gBoard[candyPos.i][candyPos.j].gameObject === HERO) return
+        else updateCell(candyPos)
+    }, 5000)
+}
+
 function gameOver() {
     gGame.isOn = false
+    clearInterval(gIntervalAliens)
+    clearInterval(gIntervalAliensShoot)
+    clearInterval(gIntervalCandy)
     showGameOverModal()
+
 }
 
 function hideGameOverModal() {
@@ -89,6 +133,8 @@ function hideGameOverModal() {
 }
 function showGameOverModal() {
     const elModal = document.querySelector('.modal')
+    elModal.querySelector('.restart').innerText = 'Restart'
+    elModal.querySelector('h2').innerHTML = (gGame.alienCount === 0) ? 'You Win!' : 'You Lost!'
     elModal.classList.remove('hidden')
 }
 

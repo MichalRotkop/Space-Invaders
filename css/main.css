@@ -38,6 +38,11 @@ td {
     display: none;
 }
 
+li {
+    list-style-type: circle;
+    font-size: 20px;
+}
+
 .modal button {
     padding: 8px;
     border-radius: 10px;
