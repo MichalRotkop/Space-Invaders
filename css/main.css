@@ -1,35 +1,84 @@
 body {
+    height: 100vh;
+    background-color: #201e1e;
+    background-image: url(/img/bg2.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    
     text-align: center;
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color:oldlace;
+}
+
+.header {
+    background-color: #0c181fa5;
+    margin-top: 0;
+    padding: 30px;
+    color: rgb(233, 174, 188);
+    font-size: 45px;
+}
+
+.score {
+    font-size: 35px;
+}
+
+.fast-laser {
+    /* color: black; */
+    font-size: 22px;
+    margin-left: 650px;
+}
+.fast-laser span {
+    color: rgb(233, 174, 188);
+
 }
 
 table {
     height: 800px;
-    width: 800px;
+    width: 900px;
     margin: auto;
-    background-color: rgb(69, 87, 103);
-
     border-collapse:collapse;
+    border: 25px solid rgba(0, 0, 0, 0.096);
+}
+
+.lives {
+    position: absolute;
+    bottom: 120px;
+    margin-left: -420px;
+}
+
+.lives img {
+    width: 35px;
+    height: auto;
+    margin-left: 10px;
 }
 
 td {
     width: 60px;
     height: 60px;
+    /* border: 1px solid gray; */
+}
 
-    border: 1px solid gray;
+td img {
+    width: 40px;
+    height: auto;
+}
+
+.SKY {
+    background-color: rgba(87, 97, 105, 0.092);
 }
 
 .EARTH {
-    background-color: rgb(78, 45, 26);
+    border-top: 8px solid rgb(63, 22, 22);
 }
 
 .modal {
-    background-color: rgba(139, 42, 42, 0.813);
+    background-color: rgba(35, 30, 30, 0.813);
+    border: 5px solid rgb(0, 0, 0);
     width: 400px;
     height: 200px;
-    padding-top: 30px;
+    padding: 20px 0px 60px;
     position: absolute;
-    top: 40%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -38,20 +87,31 @@ td {
     display: none;
 }
 
-li {
-    list-style-type: circle;
-    font-size: 20px;
-}
-
 .modal button {
-    padding: 8px;
     border-radius: 10px;
     font-size: 17px;
-
 }
 
 .modal button:hover {
     cursor: pointer;
     background-color: rgb(215, 215, 214);
+}
 
+.levels button {
+    background-color: #9cc9c5;
+    padding: 4px 10px;
+}
+
+.chosen {
+    background-color: #814f78;
+}
+
+.restart {
+    background-color: #e3e1cb;
+    margin-top: 40px;
+    padding: 10px 20px;
+}
+
+.restart:hover {
+    background-color: #666558;
 }

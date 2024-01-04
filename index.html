@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Invaders</title>
     <link rel="stylesheet" href="css/main.css">
 </head>
-<body onload="init()" onkeydown="onKeyDown(event)">
-    <h1>Space Invaders</h1>
-    <h2>Score: <span class="score">0</span></h2>
 
+<body onload="init()" onkeydown="onKeyDown(event)">
+    <h1 class="header">Space Invaders</h1>
+
+    <h2>Score: <span class="score">0</span></h2>
+    <h2 class="fast-laser">Fast laser left: <span>🔥🔥🔥</span></h2>
+    <span class="lives"></span>
     <table>
         <tbody></tbody>
     </table>
@@ -17,7 +21,7 @@
     <div class="modal">
         <h2></h2>
         <div class="levels">
-            <h3>Choose Level:</h3>
+            <h2>Choose Level:</h2>
             <button onclick="setLevel(this)">Easy</button>
             <button onclick="setLevel(this)">Normal</button>
             <button onclick="setLevel(this)">Hard</button>
@@ -26,10 +30,11 @@
 
         <button class="restart" onclick="startGame()">Start</button>
     </div>
-    
+
     <script src="js/util.js"></script>
     <script src="js/game.js"></script>
     <script src="js/hero.js"></script>
     <script src="js/alien.js"></script>
 </body>
+
 </html>

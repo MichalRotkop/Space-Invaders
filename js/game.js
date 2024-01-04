@@ -3,60 +3,55 @@
 const BOARD_SIZE = 14
 var ALIEN_ROW_LENGTH = 8
 var ALIEN_ROW_COUNT = 3
-const HERO = '🛸'
-const ALIEN1 = '👾'
-const ALIEN2 = '👻'
-const ALIEN3 = '👽'
 
+const HERO = '<img src="img/hero.png">'
+const ALIEN1 = '<img src="img/alien1.png">'
+const ALIEN2 = '<img src="img/alien2.png">'
+const ALIEN3 = '<img src="img/alien3.png">'
+
+const SKY = 'SKY'
+const EARTH = 'EARTH'
 
 var LASER = '🔷'
 var ROCK = '🔶'
 const CANDY = '🍬'
 
-const SKY = 'SKY'
-const EARTH = 'EARTH'
-
 var gIntervalCandy
 var gCandyTimeout
-
-// Matrix of cell objects. e.g.: {type: SKY, gameObject: ALIEN}
 
 var gBoard
 var gGame = {
     isOn: false,
     alienCount: 0,
-    fasterLaserCount: 3,
 }
-
-// Called when game loads
 
 function init() {
     gGame.alienCount = 0
-    gGame.fasterLaserCount = 3
     gBoard = createBoard(BOARD_SIZE)
     createHero(gBoard)
+    gHero.fasterLaserCount = 3
     gHero.score = 0
+    gHero.lives = 3
+    gHero.fasterLaserCount = 3
     gAliensTopRowIdx = 0
     gAliensBottomRowIdx = ALIEN_ROW_COUNT - 1
-    gIsAlienFreeze = false
-    // console.table(gBoard)
+    gIsAlienFreeze = true
     createAliens(gBoard)
     renderBoard(gBoard)
     renderScore()
+    renderFasterLaserCount()
+    renderHeroLives()
 }
 
 function startGame() {
     init()
-    // see if toggle or hide/show fits better
     hideGameOverModal()
     gGame.isOn = true
+    gIsAlienFreeze = false
     moveAliens(shiftBoardRight)
-    gIntervalAliensShoot = setInterval(throwRock, getRandomInt(600, 3000))
+    gIntervalAliensShoot = setInterval(throwRock,2000)
     gIntervalCandy = setInterval(addCandy, 10000)
 }
-
-// Create and returns the board with aliens on top, ground at bottom
-// use the functions: createCell, createHero, createAliens
 
 function createBoard(size) {
     const board = []
@@ -83,10 +78,19 @@ function setLevel(elBtn) {
         ALIEN_ROW_COUNT = 5
         ALIEN_SPEED = 400
     }
+    cleanLevelBtnsColor()
+    elBtn.classList.add('chosen')
+    elBtn.style.backgroundColor = '#814f78'
     init()
 }
 
-// Render the board as a <table> to the page
+function cleanLevelBtnsColor() {
+    var elBtns = document.querySelectorAll('.levels button')
+    for (var i = 0; i < elBtns.length; i++) {
+        elBtns[i].style.backgroundColor = '#9cc9c5'
+    }
+}
+
 function renderBoard(board) {
     var strHTML = ''
     for (var i = 0; i < board.length; i++) {
@@ -122,15 +126,16 @@ function gameOver() {
     gGame.isOn = false
     clearInterval(gIntervalAliens)
     clearInterval(gIntervalAliensShoot)
+    clearInterval(gIntervalRock)
     clearInterval(gIntervalCandy)
     showGameOverModal()
-
 }
 
 function hideGameOverModal() {
     const elModal = document.querySelector('.modal')
     elModal.classList.add('hidden')
 }
+
 function showGameOverModal() {
     const elModal = document.querySelector('.modal')
     elModal.querySelector('.restart').innerText = 'Restart'
@@ -142,8 +147,6 @@ function renderScore() {
     const elScore = document.querySelector('.score')
     elScore.innerHTML = gHero.score
 }
-
-// position such as: {i: 2, j: 7}
 
 function updateCell(pos, gameObject = null) {
     gBoard[pos.i][pos.j].gameObject = gameObject

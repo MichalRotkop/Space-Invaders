@@ -5,18 +5,18 @@ var gHero
 var gIntervalLaser
 var gLaserPos = null
 
-// creates the hero and place it on board
 function createHero(board) {
     gHero = {
         pos: { i: 12, j: 5 },
         isShoot: false,
         score: 0,
-        hasFasterLaser: false
+        fasterLaserCount: 3,
+        hasFasterLaser: false,
+        lives: 3
     }
     board[gHero.pos.i][gHero.pos.j].gameObject = HERO
 }
 
-// Move the hero right (1) or left (-1)
 function moveHero(dir) {
     const i = gHero.pos.i
     const j = gHero.pos.j + dir
@@ -34,7 +34,6 @@ function moveHero(dir) {
     updateCell(gHero.pos, HERO)
 }
 
-// Handle game keys
 function onKeyDown(ev) {
     // console.log('ev:', ev)
     if (!gGame.isOn) return
@@ -57,16 +56,15 @@ function onKeyDown(ev) {
             break;
 
         // for self testing: 
-        case 'KeyF':
-            gIsAlienFreeze = true
-            break;
-        case 'KeyU':
-            gIsAlienFreeze = false
-            break;
+        // case 'KeyF':
+        //     gIsAlienFreeze = true
+        //     break;
+        // case 'KeyU':
+        //     gIsAlienFreeze = false
+        //     break;
     }
 }
 
-// Sets an interval for shutting (blinking) the laser up towards aliens
 function shoot() {
     if (gHero.isShoot) return
     setLaser()
@@ -79,14 +77,12 @@ function shoot() {
             gHero.isShoot = false
             if (isAlien(laserPos)) {
                 handleAlienHit(laserPos)
-                return
             }
             return
         }
         gLaserPos = laserPos
         blinkWeapon(laserPos)
     }, LASER_SPEED)
-    console.log('gGame.alienCount:',gGame.alienCount)
 }
 
 function setLaser() {
@@ -101,9 +97,10 @@ function setLaser() {
 }
 
 function fasterLaser() {
-    if (gGame.fasterLaserCount === 0) return
+    if (gHero.fasterLaserCount === 0) return
     gHero.hasFasterLaser = true
-    gGame.fasterLaserCount--
+    gHero.fasterLaserCount--
+    renderFasterLaserCount()
 }
 
 function blinkWeapon(pos, weapon = LASER) {
@@ -124,4 +121,13 @@ function blowUpNegs() { // show explosion
     }
     clearInterval(gIntervalLaser)
     gHero.isShoot = false
+}
+
+function renderHeroLives() {
+    const elLives = document.querySelector('.lives')
+    elLives.innerHTML = HERO.repeat(gHero.lives)
+}
+function renderFasterLaserCount() {
+    const elSpan = document.querySelector('.fast-laser span')
+    elSpan.innerHTML = '🔥'.repeat(gHero.fasterLaserCount)
 }

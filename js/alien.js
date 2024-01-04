@@ -5,10 +5,6 @@ var gIntervalAliens
 var gIntervalRock
 var gIntervalAliensShoot
 
-// The following two variables represent the part of the matrix (some rows)
-// that we should shift (left, right, and bottom)
-// We need to update those when:
-// (1) shifting down and (2) last alien was cleared from row
 var gAliensTopRowIdx
 var gAliensBottomRowIdx
 
@@ -148,10 +144,6 @@ function isAlien(pos) {
     return res
 }
 
-// runs the interval for moving aliens side to side and down
-// it re-renders the board every time
-// when the aliens are reaching the hero row - interval stops
-
 function moveAliens(func) {
     gIntervalAliens = setInterval(() => {
         func(gBoard, gAliensTopRowIdx, gAliensBottomRowIdx)
@@ -166,18 +158,39 @@ function throwRock() {
     gIntervalRock = setInterval(() => {
         if (!rockPos) return
         rockPos.i++
+        if (isAlien(rockPos)) return
         if (gBoard[rockPos.i][rockPos.j].gameObject === HERO
             || gBoard[rockPos.i][rockPos.j].gameObject === LASER
             || rockPos.i === (gBoard.length - 2)) {
             clearInterval(gIntervalRock)
             if (gBoard[rockPos.i][rockPos.j].gameObject === HERO) {
-                // life--
-                gameOver()
-                return
+                onRockHitsHero()
+                if (gHero.lives === 0) {
+                    gameOver()
+                    return
+                }
             }
         }
-        blinkWeapon(rockPos,ROCK)
+        blinkWeapon(rockPos, ROCK)
     }, 100)
+}
+
+function onRockHitsHero() {
+    gHero.lives--
+    renderHeroLives()
+    gIsAlienFreeze = true
+    gGame.isOn = false
+    clearInterval(gIntervalAliensShoot)
+    if (gHero.lives === 0) {
+        return
+    }
+
+    setTimeout(() => {
+        updateCell(gHero.pos, HERO)
+        gGame.isOn = true
+        gIsAlienFreeze = false
+        gIntervalAliensShoot = setInterval(throwRock, 2000)
+    }, 2000)
 }
 
 function getRandomAlienPos() {
