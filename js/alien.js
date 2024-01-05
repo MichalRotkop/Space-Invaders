@@ -10,6 +10,7 @@ var gAliensBottomRowIdx
 
 var gIsAlienFreeze = true
 var gIsAlienDirRight = false
+var gIsAlienDirDown = false
 
 function createAliens(board) {
     const startIdx = Math.floor((board.length - ALIEN_ROW_LENGTH) / 2)
@@ -30,6 +31,7 @@ function handleAlienHit(pos) {
     gGame.alienCount--
     gHero.score += 10
     renderScore()
+    renderAliensLeft()
     if (isLastAlienInRow()) gAliensBottomRowIdx--
     if (gGame.alienCount === 0) gameOver()
 }
@@ -43,11 +45,12 @@ function shiftBoardRight(board, fromI, toI) {
             var leftCellGameObject = (j === 0) ? null : board[i][j - 1].gameObject
             var leftCellPos = { i, j: j - 1 }
 
-            if (leftCellGameObject === LASER) leftCellGameObject = null
-
+            if (leftCellGameObject === LASER || leftCellGameObject === ROCK) {
+                leftCellGameObject = null
+            }
             if (board[i][j].gameObject === LASER) {
                 if (!leftCellGameObject) continue
-                else if (isAlien({ leftCellPos })) {
+                else if (isAlien(leftCellPos)) {
                     leftCellGameObject = null
                     handleAlienHit({ i, j })
                 }
@@ -56,18 +59,12 @@ function shiftBoardRight(board, fromI, toI) {
 
             var curRowLastCellPos = { i, j: gBoard[i].length - 1 }
             if (isAlien(curRowLastCellPos)) {
+                gIsAlienDirDown = true
                 clearInterval(gIntervalAliens)
                 moveAliens(shiftBoardDown)
             }
         }
     }
-}
-
-function isAlien(pos) {
-    var res = gBoard[pos.i][pos.j].gameObject === ALIEN1
-        || gBoard[pos.i][pos.j].gameObject === ALIEN2
-        || gBoard[pos.i][pos.j].gameObject === ALIEN3
-    return res
 }
 
 function shiftBoardLeft(board, fromI, toI) {
@@ -78,8 +75,9 @@ function shiftBoardLeft(board, fromI, toI) {
         for (var j = 0; j < board[0].length; j++) {
             var rightCellGameObject = (j === board[0].length - 1) ? null : board[i][j + 1].gameObject
             var rightCellPos = { i, j: j + 1 }
-            if (rightCellGameObject === LASER) rightCellGameObject = null
-
+            if (rightCellGameObject === LASER || rightCellGameObject === ROCK) {
+                rightCellGameObject = null
+            }
             if (board[i][j].gameObject === LASER) {
                 if (!rightCellGameObject) continue
                 else if (isAlien(rightCellPos)) {
@@ -91,6 +89,7 @@ function shiftBoardLeft(board, fromI, toI) {
 
             var curRowFirstCellPos = { i, j: 0 }
             if (isAlien(curRowFirstCellPos)) {
+                gIsAlienDirDown = true
                 clearInterval(gIntervalAliens)
                 moveAliens(shiftBoardDown)
             }
@@ -100,8 +99,8 @@ function shiftBoardLeft(board, fromI, toI) {
 
 function shiftBoardDown(board, fromI, toI) {
     if (gIsAlienFreeze) return
-
     clearInterval(gIntervalAliens)
+
     for (var i = toI + 1; i >= fromI; i--) {
         for (var j = 0; j < board[0].length; j++) {
             var topCellGameObject = (i === 0) ? null : board[i - 1][j].gameObject
@@ -116,7 +115,6 @@ function shiftBoardDown(board, fromI, toI) {
                 }
             }
             board[i][j].gameObject = topCellGameObject
-
             if (isAlien({ i, j }) && i === board.length - 2) {
                 gameOver()
             }
@@ -127,6 +125,7 @@ function shiftBoardDown(board, fromI, toI) {
     gAliensBottomRowIdx++
 
     var funcName = gIsAlienDirRight ? shiftBoardLeft : shiftBoardRight
+    gIsAlienDirDown = false
     moveAliens(funcName)
 }
 
@@ -152,18 +151,25 @@ function moveAliens(func) {
 }
 
 function throwRock() {
-    if (!gGame.isOn) return
-    var rockPos = getRandomAlienPos()
+    if (!gGame.isOn || gIsAlienDirDown) return
 
+    var rockPos = getRandomAlienPos()
     gIntervalRock = setInterval(() => {
-        if (!rockPos) return
+        if (!rockPos) {
+            clearInterval(gIntervalRock)
+            return
+        }
         rockPos.i++
-        if (isAlien(rockPos)) return
+        if (isAlien(rockPos)) {
+            clearInterval(gIntervalRock)
+            return
+        }
         if (gBoard[rockPos.i][rockPos.j].gameObject === HERO
             || gBoard[rockPos.i][rockPos.j].gameObject === LASER
             || rockPos.i === (gBoard.length - 2)) {
             clearInterval(gIntervalRock)
             if (gBoard[rockPos.i][rockPos.j].gameObject === HERO) {
+                if (gHero.isShieldOn) return
                 onRockHitsHero()
                 if (gHero.lives === 0) {
                     gameOver()
@@ -172,7 +178,7 @@ function throwRock() {
             }
         }
         blinkWeapon(rockPos, ROCK)
-    }, 100)
+    }, 80)
 }
 
 function onRockHitsHero() {
@@ -184,7 +190,6 @@ function onRockHitsHero() {
     if (gHero.lives === 0) {
         return
     }
-
     setTimeout(() => {
         updateCell(gHero.pos, HERO)
         gGame.isOn = true

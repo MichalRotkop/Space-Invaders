@@ -4,7 +4,7 @@ const BOARD_SIZE = 14
 var ALIEN_ROW_LENGTH = 8
 var ALIEN_ROW_COUNT = 3
 
-const HERO = '<img src="img/hero.png">'
+var HERO = '<img src="img/hero3.png">'
 const ALIEN1 = '<img src="img/alien1.png">'
 const ALIEN2 = '<img src="img/alien2.png">'
 const ALIEN3 = '<img src="img/alien3.png">'
@@ -12,9 +12,11 @@ const ALIEN3 = '<img src="img/alien3.png">'
 const SKY = 'SKY'
 const EARTH = 'EARTH'
 
-var LASER = '🔷'
-var ROCK = '🔶'
-const CANDY = '🍬'
+var LASER
+var ROCK = '<img src="img/rock3.png">'
+const CANDY = '<img src="img/fuel2.png">'
+const EXPLOSION1 = '<img src="img/exp1.png">'
+const EXPLOSION2 = '<img src="img/exp2.png">'
 
 var gIntervalCandy
 var gCandyTimeout
@@ -32,6 +34,7 @@ function init() {
     gHero.fasterLaserCount = 3
     gHero.score = 0
     gHero.lives = 3
+    gHero.shieldCount = 3
     gHero.fasterLaserCount = 3
     gAliensTopRowIdx = 0
     gAliensBottomRowIdx = ALIEN_ROW_COUNT - 1
@@ -39,7 +42,9 @@ function init() {
     createAliens(gBoard)
     renderBoard(gBoard)
     renderScore()
+    renderAliensLeft()
     renderFasterLaserCount()
+    renderShieldsCount()
     renderHeroLives()
 }
 
@@ -49,7 +54,7 @@ function startGame() {
     gGame.isOn = true
     gIsAlienFreeze = false
     moveAliens(shiftBoardRight)
-    gIntervalAliensShoot = setInterval(throwRock,2000)
+    gIntervalAliensShoot = setInterval(throwRock,1800)
     gIntervalCandy = setInterval(addCandy, 10000)
 }
 
@@ -79,7 +84,6 @@ function setLevel(elBtn) {
         ALIEN_SPEED = 400
     }
     cleanLevelBtnsColor()
-    elBtn.classList.add('chosen')
     elBtn.style.backgroundColor = '#814f78'
     init()
 }
@@ -98,6 +102,7 @@ function renderBoard(board) {
         for (var j = 0; j < board[0].length; j++) {
             var currCell = board[i][j]
             var className = currCell.type
+
             strHTML += `<td class="${className}"
                         data-i="${i}" data-j="${j}">`
 
@@ -146,6 +151,11 @@ function showGameOverModal() {
 function renderScore() {
     const elScore = document.querySelector('.score')
     elScore.innerHTML = gHero.score
+}
+
+function renderAliensLeft() {
+    const elSpan = document.querySelector('.aliens-count span')
+    elSpan.innerHTML = gGame.alienCount
 }
 
 function updateCell(pos, gameObject = null) {

@@ -22,19 +22,33 @@ body {
     font-size: 35px;
 }
 
-.fast-laser {
-    /* color: black; */
-    font-size: 22px;
-    margin-left: 650px;
+.aliens-count {
+    color: rgb(234, 193, 97);
 }
-.fast-laser span {
-    color: rgb(233, 174, 188);
 
+.data {
+    width: 890px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.fast-laser, .shield {
+    color: rgb(234, 230, 219);
+    position: absolute;
+    bottom: 100px;
+}
+
+.fast-laser {
+    margin-left: 360px;
+}
+
+.shield {
+    margin-left: 720px;
 }
 
 table {
-    height: 800px;
-    width: 900px;
+    height: 820px;
+    width: 920px;
     margin: auto;
     border-collapse:collapse;
     border: 25px solid rgba(0, 0, 0, 0.096);
@@ -42,8 +56,8 @@ table {
 
 .lives {
     position: absolute;
-    bottom: 120px;
-    margin-left: -420px;
+    bottom: 115px;
+    margin-left: -430px;
 }
 
 .lives img {
@@ -55,7 +69,6 @@ table {
 td {
     width: 60px;
     height: 60px;
-    /* border: 1px solid gray; */
 }
 
 td img {
@@ -68,7 +81,7 @@ td img {
 }
 
 .EARTH {
-    border-top: 8px solid rgb(63, 22, 22);
+    border-top: 8px solid rgb(107, 72, 72);
 }
 
 .modal {
@@ -78,7 +91,7 @@ td img {
     height: 200px;
     padding: 20px 0px 60px;
     position: absolute;
-    top: 50%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
 }

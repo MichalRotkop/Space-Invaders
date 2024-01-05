@@ -12,7 +12,11 @@
     <h1 class="header">Space Invaders</h1>
 
     <h2>Score: <span class="score">0</span></h2>
-    <h2 class="fast-laser">Fast laser left: <span>🔥🔥🔥</span></h2>
+    <h3 class="aliens-count">Aliens left: <span></span></h3>
+    <div class="data">
+        <h3 class="fast-laser">Fast laser: <span>🔥🔥🔥</span></h3>
+        <h3 class="shield">Shields: <span></span></h3>
+    </div>
     <span class="lives"></span>
     <table>
         <tbody></tbody>
@@ -25,9 +29,7 @@
             <button onclick="setLevel(this)">Easy</button>
             <button onclick="setLevel(this)">Normal</button>
             <button onclick="setLevel(this)">Hard</button>
-
         </div>
-
         <button class="restart" onclick="startGame()">Start</button>
     </div>
 

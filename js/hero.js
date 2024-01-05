@@ -12,6 +12,8 @@ function createHero(board) {
         score: 0,
         fasterLaserCount: 3,
         hasFasterLaser: false,
+        isShieldOn: false,
+        shieldCount: 3,
         lives: 3
     }
     board[gHero.pos.i][gHero.pos.j].gameObject = HERO
@@ -52,16 +54,19 @@ function onKeyDown(ev) {
             blowUpNegs()
             break;
         case 'KeyX':
-            fasterLaser() // show laser Mark
+            fasterLaser()
+            break;
+        case 'KeyZ':
+            shieldHero()
             break;
 
         // for self testing: 
-        // case 'KeyF':
-        //     gIsAlienFreeze = true
-        //     break;
-        // case 'KeyU':
-        //     gIsAlienFreeze = false
-        //     break;
+        case 'KeyF':
+            gIsAlienFreeze = true
+            break;
+        case 'KeyU':
+            gIsAlienFreeze = false
+            break;
     }
 }
 
@@ -88,11 +93,11 @@ function shoot() {
 function setLaser() {
     if (gHero.hasFasterLaser) {
         LASER_SPEED = 40
-        LASER = '🔥'
+        LASER = '<img src="img/fast_laser.png">'
         gHero.hasFasterLaser = false
     } else {
         LASER_SPEED = 80
-        LASER = '🔷'
+        LASER = '<img src="img/laser.png">'
     }
 }
 
@@ -108,14 +113,16 @@ function blinkWeapon(pos, weapon = LASER) {
     setTimeout(updateCell, LASER_SPEED - 20, pos)
 }
 
-function blowUpNegs() { // show explosion
+function blowUpNegs() {
     if (!gHero.isShoot) return
+    renderCellExplosion(gLaserPos, EXPLOSION1)
     for (var i = gLaserPos.i - 1; i <= gLaserPos.i + 1; i++) {
         if (i < 0 || i >= gBoard.length - 1) continue
         for (var j = gLaserPos.j - 1; j <= gLaserPos.j + 1; j++) {
             if (j < 0 || j >= gBoard[i].length) continue
-            if (isAlien({i,j})) {
+            if (isAlien({ i, j })) {
                 handleAlienHit({ i, j })
+                renderCellExplosion({ i, j }, EXPLOSION2)
             }
         }
     }
@@ -123,11 +130,38 @@ function blowUpNegs() { // show explosion
     gHero.isShoot = false
 }
 
+function shieldHero() {
+    if(gHero.isShieldOn || gHero.shieldCount === 0) return
+    gHero.isShieldOn = true
+    HERO = '<img src="img/shield2.png">'
+    updateCell(gHero.pos,HERO)
+    gHero.shieldCount--
+    renderShieldsCount()
+
+    setTimeout(() => {
+        gHero.isShieldOn = false
+        HERO = '<img src="img/hero3.png">'
+        updateCell(gHero.pos,HERO)
+    }, 5000)
+}
+
+function renderCellExplosion(pos, explosion) {
+    var elCell = getElCell(pos)
+    elCell.innerHTML = explosion
+    setTimeout(() => elCell.innerHTML = null, 4000)
+}
+
 function renderHeroLives() {
     const elLives = document.querySelector('.lives')
     elLives.innerHTML = HERO.repeat(gHero.lives)
 }
+
 function renderFasterLaserCount() {
     const elSpan = document.querySelector('.fast-laser span')
     elSpan.innerHTML = '🔥'.repeat(gHero.fasterLaserCount)
+}
+
+function renderShieldsCount() {
+    const elSpan = document.querySelector('.shield span')
+    elSpan.innerHTML = '🛡️'.repeat(gHero.shieldCount)
 }
