@@ -4,10 +4,9 @@ body {
     background-image: url(../img/bg2.jpg);
     background-repeat: no-repeat;
     background-size: cover;
-    
     text-align: center;
-    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    color:oldlace;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    color: oldlace;
 }
 
 .header {
@@ -32,10 +31,12 @@ body {
     padding: 10px;
 }
 
-.fast-laser, .shield {
+.fast-laser,
+.shield {
     color: rgb(234, 230, 219);
+    color: rgb(234, 193, 97);
     position: absolute;
-    bottom: 100px;
+    bottom: 104px;
 }
 
 .fast-laser {
@@ -50,7 +51,7 @@ table {
     height: 820px;
     width: 920px;
     margin: auto;
-    border-collapse:collapse;
+    border-collapse: collapse;
     border: 25px solid rgba(0, 0, 0, 0.096);
 }
 
@@ -69,6 +70,7 @@ table {
 td {
     width: 60px;
     height: 60px;
+    transition: 300ms;
 }
 
 td img {
@@ -84,16 +86,36 @@ td img {
     border-top: 8px solid rgb(107, 72, 72);
 }
 
+.BUNKER {
+    background-color: rgba(28, 31, 31, 0.907);
+    border-radius: 20%;
+}
+
 .modal {
-    background-color: rgba(35, 30, 30, 0.813);
+    background-color: rgba(35, 30, 30, 0.855);
     border: 5px solid rgb(0, 0, 0);
     width: 400px;
-    height: 200px;
-    padding: 20px 0px 60px;
+    height: 500px;
+    padding: 10px 0px 60px;
     position: absolute;
-    top: 55%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.keys {
+    color: rgb(234, 193, 97);
+    margin-left: 30px;
+    text-align: left;
+}
+
+.keys h3 {
+    display: inline;
+}
+
+.keys img {
+    position: relative;
+    top: 20px;
 }
 
 .hidden {
@@ -107,12 +129,15 @@ td img {
 
 .modal button:hover {
     cursor: pointer;
-    background-color: rgb(215, 215, 214);
 }
 
 .levels button {
     background-color: #9cc9c5;
     padding: 4px 10px;
+}
+
+.levels button:hover {
+    background-color: #729a96;
 }
 
 .chosen {
@@ -122,9 +147,11 @@ td img {
 .restart {
     background-color: #e3e1cb;
     margin-top: 40px;
+    margin-bottom: 20px;
     padding: 10px 20px;
 }
 
 .restart:hover {
-    background-color: #666558;
+    background-color: #e0ddc1;
+    font-weight: bold;
 }

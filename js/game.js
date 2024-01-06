@@ -11,6 +11,7 @@ const ALIEN3 = '<img src="img/alien3.png">'
 
 const SKY = 'SKY'
 const EARTH = 'EARTH'
+var BUNKER = 'BUNKER'
 
 var LASER
 var ROCK = '<img src="img/rock3.png">'
@@ -54,7 +55,7 @@ function startGame() {
     gGame.isOn = true
     gIsAlienFreeze = false
     moveAliens(shiftBoardRight)
-    gIntervalAliensShoot = setInterval(throwRock,1800)
+    gIntervalAliensShoot = setInterval(throwRock, 1800)
     gIntervalCandy = setInterval(addCandy, 10000)
 }
 
@@ -63,10 +64,34 @@ function createBoard(size) {
     for (var i = 0; i < size; i++) {
         board[i] = []
         for (var j = 0; j < size; j++) {
-            board[i][j] = (i === size - 1) ? createCell(EARTH) : createCell()
+            if ((i === 10 && j !== 0 && j !== 4 && j !== 9 && j !== 13) || (i === 11) &&
+                (j === 1 || j === 3 || j === 5 || j === 8 || j === 10 || j === 12)) {
+                board[i][j] = createCell(BUNKER)
+            } else {
+                board[i][j] = (i === size - 1) ? createCell(EARTH) : createCell()
+            }
         }
     }
     return board
+}
+
+function renderBoard(board) {
+    var strHTML = ''
+    for (var i = 0; i < board.length; i++) {
+        strHTML += '<tr>'
+        for (var j = 0; j < board[0].length; j++) {
+            var currCell = board[i][j]
+            var className = currCell.type
+
+            strHTML += `<td class="${className}"
+            data-i="${i}" data-j="${j}">`
+
+            strHTML += (currCell.gameObject) ? `${currCell.gameObject}</td>` : `</td>`
+        }
+        strHTML += '</tr>'
+    }
+    const elTbody = document.querySelector('tbody')
+    elTbody.innerHTML = strHTML
 }
 
 function setLevel(elBtn) {
@@ -95,25 +120,6 @@ function cleanLevelBtnsColor() {
     }
 }
 
-function renderBoard(board) {
-    var strHTML = ''
-    for (var i = 0; i < board.length; i++) {
-        strHTML += '<tr>'
-        for (var j = 0; j < board[0].length; j++) {
-            var currCell = board[i][j]
-            var className = currCell.type
-
-            strHTML += `<td class="${className}"
-                        data-i="${i}" data-j="${j}">`
-
-            strHTML += (currCell.gameObject) ? `${currCell.gameObject}</td>` : `</td>`
-        }
-        strHTML += '</tr>'
-    }
-    const elTbody = document.querySelector('tbody')
-    elTbody.innerHTML = strHTML
-}
-
 function addCandy() {
     var jRandomIdx = getRandomInt(0, gBoard[0].length)
     while (gHero.pos.j === jRandomIdx) {
@@ -125,6 +131,12 @@ function addCandy() {
         if (gBoard[candyPos.i][candyPos.j].gameObject === HERO) return
         else updateCell(candyPos)
     }, 5000)
+}
+
+function handleBunkerHit(pos) {
+    gBoard[pos.i][pos.j].type = SKY
+    var elBunker = getElCell(pos)
+    elBunker.classList.remove('BUNKER')
 }
 
 function gameOver() {
@@ -144,7 +156,7 @@ function hideGameOverModal() {
 function showGameOverModal() {
     const elModal = document.querySelector('.modal')
     elModal.querySelector('.restart').innerText = 'Restart'
-    elModal.querySelector('h2').innerHTML = (gGame.alienCount === 0) ? 'You Win!' : 'You Lost!'
+    elModal.querySelector('h2').innerHTML = (gGame.alienCount === 0) ? 'You Win! 🌍' : 'You Lost! 👾'
     elModal.classList.remove('hidden')
 }
 

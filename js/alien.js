@@ -41,7 +41,6 @@ function shiftBoardRight(board, fromI, toI) {
     gIsAlienDirRight = true
     for (var i = fromI; i <= toI; i++) {
         for (var j = board[0].length - 1; j >= 0; j--) {
-
             var leftCellGameObject = (j === 0) ? null : board[i][j - 1].gameObject
             var leftCellPos = { i, j: j - 1 }
 
@@ -57,6 +56,9 @@ function shiftBoardRight(board, fromI, toI) {
             }
             board[i][j].gameObject = leftCellGameObject
 
+            if (isAlien({ i, j }) && board[i][j].type === BUNKER) {
+                handleBunkerHit({ i, j })
+            }
             var curRowLastCellPos = { i, j: gBoard[i].length - 1 }
             if (isAlien(curRowLastCellPos)) {
                 gIsAlienDirDown = true
@@ -87,6 +89,9 @@ function shiftBoardLeft(board, fromI, toI) {
             }
             board[i][j].gameObject = rightCellGameObject
 
+            if (isAlien({ i, j }) && board[i][j].type === BUNKER) {
+                handleBunkerHit({ i, j })
+            }
             var curRowFirstCellPos = { i, j: 0 }
             if (isAlien(curRowFirstCellPos)) {
                 gIsAlienDirDown = true
@@ -103,6 +108,7 @@ function shiftBoardDown(board, fromI, toI) {
 
     for (var i = toI + 1; i >= fromI; i--) {
         for (var j = 0; j < board[0].length; j++) {
+
             var topCellGameObject = (i === 0) ? null : board[i - 1][j].gameObject
             var topCellPos = { i: i - 1, j }
             if (topCellGameObject === LASER) topCellGameObject = null
@@ -115,6 +121,10 @@ function shiftBoardDown(board, fromI, toI) {
                 }
             }
             board[i][j].gameObject = topCellGameObject
+
+            if (isAlien({ i, j }) && board[i][j].type === BUNKER) {
+                handleBunkerHit({ i, j })
+            }
             if (isAlien({ i, j }) && i === board.length - 2) {
                 gameOver()
             }
@@ -154,28 +164,27 @@ function throwRock() {
     if (!gGame.isOn || gIsAlienDirDown) return
 
     var rockPos = getRandomAlienPos()
+    if (!rockPos) return
     gIntervalRock = setInterval(() => {
-        if (!rockPos) {
-            clearInterval(gIntervalRock)
-            return
-        }
         rockPos.i++
         if (isAlien(rockPos)) {
             clearInterval(gIntervalRock)
             return
         }
-        if (gBoard[rockPos.i][rockPos.j].gameObject === HERO
-            || gBoard[rockPos.i][rockPos.j].gameObject === LASER
-            || rockPos.i === (gBoard.length - 2)) {
-            clearInterval(gIntervalRock)
-            if (gBoard[rockPos.i][rockPos.j].gameObject === HERO) {
-                if (gHero.isShieldOn) return
-                onRockHitsHero()
-                if (gHero.lives === 0) {
-                    gameOver()
-                    return
-                }
+        if (gBoard[rockPos.i][rockPos.j].gameObject === HERO) {
+            if (gHero.isShieldOn) return
+            onRockHitsHero()
+            if (gHero.lives === 0) {
+                gameOver()
+                return
             }
+        } else if (gBoard[rockPos.i][rockPos.j].type === BUNKER) {
+            handleBunkerHit(rockPos)
+            clearInterval(gIntervalRock)
+        } else if (gBoard[rockPos.i][rockPos.j].gameObject === LASER
+            || rockPos.i === (gBoard.length - 1)) {
+            clearInterval(gIntervalRock)
+            return
         }
         blinkWeapon(rockPos, ROCK)
     }, 80)
@@ -194,7 +203,7 @@ function onRockHitsHero() {
         updateCell(gHero.pos, HERO)
         gGame.isOn = true
         gIsAlienFreeze = false
-        gIntervalAliensShoot = setInterval(throwRock, 2000)
+        gIntervalAliensShoot = setInterval(throwRock, 1800)
     }, 2000)
 }
 

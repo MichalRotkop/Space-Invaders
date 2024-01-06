@@ -29,7 +29,6 @@ function moveHero(dir) {
         renderScore()
         gIsAlienFreeze = true
         setTimeout(() => gIsAlienFreeze = false, 5000)
-
     }
     updateCell(gHero.pos)
     gHero.pos.j = nextPos.j
@@ -37,7 +36,6 @@ function moveHero(dir) {
 }
 
 function onKeyDown(ev) {
-    // console.log('ev:', ev)
     if (!gGame.isOn) return
 
     switch (ev.code) {
@@ -59,14 +57,6 @@ function onKeyDown(ev) {
         case 'KeyZ':
             shieldHero()
             break;
-
-        // for self testing: 
-        case 'KeyF':
-            gIsAlienFreeze = true
-            break;
-        case 'KeyU':
-            gIsAlienFreeze = false
-            break;
     }
 }
 
@@ -77,11 +67,15 @@ function shoot() {
     gIntervalLaser = setInterval(() => {
         laserPos.i--
         gHero.isShoot = true
-        if (isAlien(laserPos) || laserPos.i === 0 || gBoard[laserPos.i][laserPos.j].gameObject === ROCK) {
+        if (isAlien(laserPos) || laserPos.i === 0 ||
+            gBoard[laserPos.i][laserPos.j].gameObject === ROCK ||
+            gBoard[laserPos.i][laserPos.j].type === BUNKER) {
             clearInterval(gIntervalLaser)
             gHero.isShoot = false
             if (isAlien(laserPos)) {
                 handleAlienHit(laserPos)
+            } else if (gBoard[laserPos.i][laserPos.j].type === BUNKER) {
+                handleBunkerHit(laserPos)
             }
             return
         }
@@ -131,17 +125,17 @@ function blowUpNegs() {
 }
 
 function shieldHero() {
-    if(gHero.isShieldOn || gHero.shieldCount === 0) return
+    if (gHero.isShieldOn || gHero.shieldCount === 0) return
     gHero.isShieldOn = true
     HERO = '<img src="img/shield2.png">'
-    updateCell(gHero.pos,HERO)
+    updateCell(gHero.pos, HERO)
     gHero.shieldCount--
     renderShieldsCount()
 
     setTimeout(() => {
         gHero.isShieldOn = false
         HERO = '<img src="img/hero3.png">'
-        updateCell(gHero.pos,HERO)
+        updateCell(gHero.pos, HERO)
     }, 5000)
 }
 
